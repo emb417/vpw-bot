@@ -16,7 +16,6 @@ logger.info(`FEATURES_DIR: ${process.env.FEATURES_DIR}`);
 logger.info(`DISCORD_BASE_API: ${process.env.DISCORD_BASE_API}`);
 logger.info(`GUILD_ID: ${process.env.GUILD_ID}`);
 logger.info(`SECONDS_TO_DELETE_MESSAGE: ${process.env.SECONDS_TO_DELETE_MESSAGE}`);
-logger.info(`DB_NAME: ${process.env.DB_NAME}`);
 logger.info(`BOT_OWNER: ${process.env.BOT_OWNER}`);
 logger.info(`VPW_DATA_SERVICE_API_URI: ${process.env.VPW_DATA_SERVICE_API_URI}`);
 
