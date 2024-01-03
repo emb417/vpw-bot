@@ -34,7 +34,7 @@ client.on('ready', () => {
     logger.info('Loading commands');
     new WOKCommands(client, {
       commandsDir: path.join(__dirname, process.env.COMMANDS_DIR),
-      featuresDir: path.join(__dirname, process.env.FEATURES_DIR),
+      //featuresDir: path.join(__dirname, process.env.FEATURES_DIR),
       showWarns: false,
       delErrMsgCooldown: process.env.SECONDS_TO_DELETE_MESSAGE,
       botOwners: process.env.BOT_OWNER,
