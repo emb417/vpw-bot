@@ -37,7 +37,7 @@ module.exports = {
         )  
       } else {
         if(!latestStatus) {
-          response = 'Checkout failed.  There is not an existing CHECK IN for this project.  Please use the /checkin command to create a CHECK IN.';
+          response = '**Check Out failed**.  There is **NOT** an existing CHECK IN for this project.  Please use the /checkin command to create a CHECK IN.';
         } else {
           response = 'This project is already **CHECKED OUT** to the user below.\n\n' + 
             outputHelper.printLatestAction(await vpwDataService.getLatestStatus(channel.id));

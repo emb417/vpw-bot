@@ -36,12 +36,15 @@ module.exports = {
         if((isCheckedOut && username === latestStatus.username) || isFirstCheckin) {
           let action = new Action(channel.id, channel.name, userId, username, link, version, comments, 'checkin');
           response = await vpwDataService.addAction(action);
+        } else if(isCheckedOut) {
+          response = '**Check In failed**. You are NOT the user that currently has this project **CHECKED OUT**.\n\n'
+            + outputHelper.printLatestAction(latestStatus);
         } else {
-          response = 'Checkin failed. You are NOT the user that currently has this project **CHECKED OUT**.\n\n'
+          response = '**Check In failed**. The project is **NOT CHECKED OUT**. You need to **CHECK OUT** the project first, then CHECK IN\n\n'
             + outputHelper.printLatestAction(latestStatus);
         }
       } else {
-        response = 'Checkin failed. The link parameter was not a valid URL. Please try again with a valid URL in the link parameter.';
+        response = '**Check In failed**. The link parameter was **NOT** a valid URL. Please try again with a valid URL in the link parameter.';
       }
       interaction.reply({content: response, ephemeral: false});
     } catch(error) {

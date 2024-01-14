@@ -26,7 +26,7 @@ module.exports = {
             }
           });
       } else {
-        response = 'This channel does not have any actions to list.  Use the checkin command to create a checkin.';
+        response = 'This channel does not have any actions to list.  Use the /checkin command to create a checkin.';
       }
       interaction.reply({content: response, ephemeral: true});
     } catch(error) {

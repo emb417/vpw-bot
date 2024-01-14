@@ -22,7 +22,7 @@ module.exports = {
       if(latestStatus) {
         response = outputHelper.printLatestAction(latestStatus);
       } else {
-        response = 'This channel does not have a checkin.  Use the checkin command to create a checkin.';
+        response = 'This channel does not have a check in.  Use the /checkin command to create a check in.';
       }
       interaction.reply({content: response, ephemeral: true});
     } catch(error) {
