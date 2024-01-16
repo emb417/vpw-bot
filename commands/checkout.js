@@ -16,7 +16,8 @@ module.exports = {
     const outputHelper = new OutputHelper();
     const vpwDataService = new VPWDataService();
     let response;
-    
+    let isEphemeral = false;
+
     try{
       const isCheckedOut = await vpwDataService.isCheckedOut(channel.id);
       const latestStatus = await vpwDataService.getLatestStatus(channel.id);
@@ -34,7 +35,7 @@ module.exports = {
                   });
               };
           }
-        )  
+        )
       } else {
         if(!latestStatus) {
           response = '**Check Out failed**.  There is **NOT** an existing CHECK IN for this project.  Please use the /checkin command to create a CHECK IN.';
@@ -42,8 +43,9 @@ module.exports = {
           response = 'This project is already **CHECKED OUT** to the user below.\n\n' + 
             outputHelper.printLatestAction(await vpwDataService.getLatestStatus(channel.id));
         }
+        isEphemeral = true;  
       }
-      interaction.reply({content: response, ephemeral: false});
+      interaction.reply({content: response, ephemeral: isEphemeral});
 
     } catch(error) {
       logger.error(error.message);

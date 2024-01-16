@@ -16,7 +16,7 @@ module.exports = {
     try{
       let response;
       response = await vpwDataService.removeAction(channel.id, interaction?.user?.id);
-      interaction.reply({content: response, ephemeral: false});
+      interaction.reply({content: response, ephemeral: true});
     } catch(error) {
       logger.error(error.message);
       interaction.reply({content: error.message, ephemeral: true});
