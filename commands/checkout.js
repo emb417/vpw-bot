@@ -15,6 +15,7 @@ module.exports = {
     let logger = (new Logger(null)).logger;
     const outputHelper = new OutputHelper();
     const vpwDataService = new VPWDataService();
+    const LEFT_ARROW = ':arrow_left:';
     let response;
     let isEphemeral = false;
 
@@ -28,6 +29,7 @@ module.exports = {
         let action = new Action(channel.id, channel.name, userId, username, null, null, null, 'checkout');
         await vpwDataService.addAction(action).then(
           async res => {
+              res = LEFT_ARROW + ' ' + res;
               if(action.actionType === 'checkout') {
                   await (vpwDataService.getLatestStatus(action.channelId)
                   ).then(latest => {

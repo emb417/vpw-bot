@@ -19,6 +19,7 @@ module.exports = {
     let logger = (new Logger(null)).logger;
     const outputHelper = new OutputHelper();
     const vpwDataService = new VPWDataService();
+    const RIGHT_ARROW = ':arrow_right:';
     let response;
     let isEphemeral = false;
 
@@ -37,6 +38,7 @@ module.exports = {
         if((isCheckedOut && username === latestStatus.username) || isFirstCheckin) {
           let action = new Action(channel.id, channel.name, userId, username, link, version, comments, 'checkin');
           response = await vpwDataService.addAction(action);
+          response = RIGHT_ARROW + ' ' + response;
         } else if(isCheckedOut) {
           response = '**Check In failed**. You are NOT the user that currently has this project **CHECKED OUT**.\n\n'
             + outputHelper.printLatestAction(latestStatus);
