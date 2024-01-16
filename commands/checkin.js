@@ -20,6 +20,7 @@ module.exports = {
     const outputHelper = new OutputHelper();
     const vpwDataService = new VPWDataService();
     let response;
+    let isEphemeral = false;
 
     try{
       const [link, version, comments] = args;
@@ -36,6 +37,7 @@ module.exports = {
         if((isCheckedOut && username === latestStatus.username) || isFirstCheckin) {
           let action = new Action(channel.id, channel.name, userId, username, link, version, comments, 'checkin');
           response = await vpwDataService.addAction(action);
+          isEphemeral = true;
         } else if(isCheckedOut) {
           response = '**Check In failed**. You are NOT the user that currently has this project **CHECKED OUT**.\n\n'
             + outputHelper.printLatestAction(latestStatus);
@@ -46,7 +48,7 @@ module.exports = {
       } else {
         response = '**Check In failed**. The link parameter was **NOT** a valid URL. Please try again with a valid URL in the link parameter.';
       }
-      interaction.reply({content: response, ephemeral: false});
+      interaction.reply({content: response, ephemeral: isEphemeral});
     } catch(error) {
       logger.error(error.message);
       interaction.reply({content: error.message, ephemeral: true});
