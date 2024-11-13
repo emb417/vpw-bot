@@ -26,6 +26,7 @@ module.exports = {
       const username = interaction?.member?.user?.username;
 
       if(!isCheckedOut && latestStatus) {
+        await interaction.deferReply({ephemeral: isEphemeral});
         let action = new Action(channel.id, channel.name, userId, username, null, null, null, 'checkout');
         await vpwDataService.addAction(action).then(
           async res => {
@@ -39,19 +40,21 @@ module.exports = {
           }
         )
       } else {
+        isEphemeral = true;  
+        await interaction.deferReply({ephemeral: isEphemeral});
+       
         if(!latestStatus) {
           response = '**Check Out failed**.  There is **NOT** an existing CHECK IN for this project.  Please use the /checkin command to create a CHECK IN.';
         } else {
           response = 'This project is already **CHECKED OUT** to the user below.\n\n' + 
             outputHelper.printLatestAction(await vpwDataService.getLatestStatus(channel.id));
         }
-        isEphemeral = true;  
       }
-      interaction.reply({content: response, ephemeral: isEphemeral});
+      interaction.editReply(response);
 
     } catch(error) {
       logger.error(error.message);
-      interaction.reply({content: error.message, ephemeral: true});
+      interaction.editReply(error.message);
     }
   },
 }
