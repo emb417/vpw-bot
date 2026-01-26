@@ -1,38 +1,40 @@
-require('dotenv').config()
-const path = require('path');
-const { VPWDataService } = require('../services/vpwDataService')
-const Logger = require('../helpers/loggingHelper');
+import "dotenv/config";
+import path from "path";
+import { logger, vpw } from "../utils/index.js";
 
-module.exports = {
-  commandName: path.basename(__filename).split('.')[0],
-  slash: true,
-  testOnly: true,
-  guildOnly: true,
-  description: 'Show list of actions.',
-  callback: async ({ channel, interaction }) => {
-    let logger = (new Logger(null)).logger;
-    const vpwDataService = new VPWDataService();
+export default {
+  commandName: path.basename(import.meta.url).split(".")[0],
+  description: "Show list of actions.",
 
-    try{
-      let response = '';
-      const actions = await vpwDataService.getProject(channel.id);
+  // No arguments for this command
+  options: [],
 
-      if(actions && actions.length > 0) {
-          actions.reverse().slice(0, 10).forEach(a => {
-            if(a.actionType === 'checkin') {
-              response += `- **${a.version ?? ''}**\t${a.created}:\t<@${a.userId}>\t${a.actionType}\t[link](<${a.link }>)\t${a.comments}\n\n`;
+  callback: async function ({ interaction, channel }) {
+    try {
+      let response = "";
+      const actions = await vpw.getProject(channel.id);
+
+      if (actions && actions.length > 0) {
+        actions
+          .slice()
+          .reverse()
+          .slice(0, 10)
+          .forEach((a) => {
+            if (a.actionType === "checkin") {
+              response += `- **${a.version ?? ""}**\t${a.created}:\t<@${a.userId}>\t${a.actionType}\t[link](<${a.link}>)\t${a.comments}\n\n`;
             } else {
-              response += `- ${a.created}:\t<@${a.userId}>\t${a.actionType}\t\n\n`;
+              response += `- ${a.created}:\t<@${a.userId}>\t${a.actionType}\n\n`;
             }
           });
       } else {
-        response = 'This channel does not have any actions to list.  Use the /checkin command to create a checkin.';
+        response =
+          "This channel does not have any actions to list. Use the /checkin command to create a checkin.";
       }
-      interaction.reply({content: response, ephemeral: true});
-    } catch(error) {
+
+      await interaction.reply({ content: response, flags: 64 });
+    } catch (error) {
       logger.error(error.message);
-      interaction.reply({content: error.message, ephemeral: true});
+      await interaction.reply({ content: error.message, flags: 64 });
     }
   },
-
-}
+};

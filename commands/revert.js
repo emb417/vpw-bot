@@ -1,26 +1,22 @@
-require('dotenv').config()
-const path = require('path');
-const { VPWDataService } = require('../services/vpwDataService')
-const Logger = require('../helpers/loggingHelper');
+import "dotenv/config";
+import path from "path";
+import { logger, vpw } from "../utils/index.js";
 
-module.exports = {
-  commandName: path.basename(__filename).split('.')[0],
-  slash: true,
-  testOnly: true,
-  guildOnly: true,
-  description: 'Revert the last action',
-  callback: async ({ channel, interaction }) => {
-    let logger = (new Logger(null)).logger;
-    const vpwDataService = new VPWDataService();
+export default {
+  commandName: path.basename(import.meta.url).split(".")[0],
+  description: "Revert the last action",
 
-    try{
-      let response;
-      response = await vpwDataService.removeAction(channel.id, interaction?.user?.id);
-      interaction.reply({content: response, ephemeral: true});
-    } catch(error) {
+  // No arguments for this command
+  options: [],
+
+  callback: async function ({ interaction, channel }) {
+    try {
+      const response = await vpw.removeAction(channel.id, interaction.user.id);
+
+      await interaction.reply({ content: response, flags: 64 });
+    } catch (error) {
       logger.error(error.message);
-      interaction.reply({content: error.message, ephemeral: true});
+      await interaction.reply({ content: error.message, flags: 64 });
     }
   },
-
-}
+};

@@ -1,45 +1,116 @@
-require('dotenv').config()
-const Logger = require('./helpers/loggingHelper');
-const DiscordJS = require('discord.js')
-const { Intents } = DiscordJS
-const WOKCommands = require('wokcommands')
-const path = require('path')
+import "dotenv/config";
+import path from "path";
+import { fileURLToPath } from "url";
+import { logger } from "./utils/index.js";
+import { Client, GatewayIntentBits, Partials, REST, Routes } from "discord.js";
+import fs from "fs";
 
-let logger = (new Logger(null)).logger;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const commandsPath = path.join(__dirname, process.env.COMMANDS_DIR);
 
-logger.info('Starting bot');
-logger.info(`APPLICATION_ID: ${process.env.APPLICATION_ID}`);
-logger.info(`BOT_TOKEN: ${process.env.BOT_TOKEN}`);
-logger.info(`BOT_USER: ${process.env.BOT_USER}`);
-logger.info(`COMMANDS_DIR: ${process.env.COMMANDS_DIR}`);
-logger.info(`FEATURES_DIR: ${process.env.FEATURES_DIR}`);
-logger.info(`DISCORD_BASE_API: ${process.env.DISCORD_BASE_API}`);
-logger.info(`GUILD_ID: ${process.env.GUILD_ID}`);
-logger.info(`SECONDS_TO_DELETE_MESSAGE: ${process.env.SECONDS_TO_DELETE_MESSAGE}`);
-logger.info(`BOT_OWNER: ${process.env.BOT_OWNER}`);
-logger.info(`VPW_DATA_SERVICE_API_URI: ${process.env.VPW_DATA_SERVICE_API_URI}`);
+// -----------------------------------------------------
+// 1. Create Discord client
+// -----------------------------------------------------
+logger.info("Starting bot");
 
-const client = new DiscordJS.Client({
+const client = new Client({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.DIRECT_MESSAGES,
-    Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.DirectMessageReactions,
+    GatewayIntentBits.MessageContent,
   ],
-})
+  partials: [Partials.Channel],
+});
 
-client.on('ready', () => {
-    logger.info('Loading commands');
-    new WOKCommands(client, {
-      commandsDir: path.join(__dirname, process.env.COMMANDS_DIR),
-      //featuresDir: path.join(__dirname, process.env.FEATURES_DIR),
-      showWarns: false,
-      delErrMsgCooldown: process.env.SECONDS_TO_DELETE_MESSAGE,
-      botOwners: process.env.BOT_OWNER,
-      testServers: process.env.GUILD_ID
-    })
-    logger.info('Bot is ready for work');
-})
+// -----------------------------------------------------
+// 2. Load command modules
+// -----------------------------------------------------
+const commands = new Map();
+const slashDefinitions = [];
 
-client.login(process.env.BOT_TOKEN)
+for (const file of fs.readdirSync(commandsPath)) {
+  if (!file.endsWith(".js")) continue;
+
+  const commandModule = await import(path.join(commandsPath, file));
+  const command = commandModule.default;
+
+  commands.set(command.commandName, command);
+
+  slashDefinitions.push({
+    name: command.commandName,
+    description: command.description,
+    options: command.options ?? [],
+  });
+}
+
+logger.info(`Loaded ${commands.size} commands`);
+
+// -----------------------------------------------------
+// 3. Register slash commands (guild-only for instant updates)
+// -----------------------------------------------------
+client.once("clientReady", async () => {
+  logger.info(`Logged in as ${client.user.tag} :: ${client.user.id}`);
+  logger.info("Registering slash commands...");
+
+  const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN);
+
+  await rest.put(
+    Routes.applicationGuildCommands(client.user.id, process.env.GUILD_ID),
+    { body: slashDefinitions },
+  );
+
+  logger.info("Slash commands registered");
+});
+
+// -----------------------------------------------------
+// 4. Interaction router
+// -----------------------------------------------------
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
+
+  logger.info(
+    `Received interaction: ${interaction.commandName} from ${interaction.user.username}`,
+  );
+
+  const command = commands.get(interaction.commandName);
+
+  if (!command) {
+    logger.warn(`Unknown command: ${interaction.commandName}`);
+    return interaction.reply({
+      content: "Command not found.",
+      flags: 64,
+    });
+  }
+
+  try {
+    await command.callback({
+      interaction,
+      channel: interaction.channel,
+      client,
+    });
+
+    if (!interaction.replied && !interaction.deferred) {
+      logger.warn(`Command ${interaction.commandName} did not reply!`);
+      await interaction.reply({
+        content: "Command executed but did not reply.",
+        ephemeral: true,
+      });
+    }
+  } catch (error) {
+    logger.error(error);
+    if (!interaction.replied) {
+      interaction.reply({
+        content: "An error occurred while executing this command.",
+        flags: 64,
+      });
+    }
+  }
+});
+
+// -----------------------------------------------------
+// 5. Login
+// -----------------------------------------------------
+client.login(process.env.BOT_TOKEN);

@@ -1,34 +1,30 @@
-require('dotenv').config()
-const path = require('path');
-const { OutputHelper } = require('../helpers/outputHelper')
-const { VPWDataService } = require('../services/vpwDataService')
-const Logger = require('../helpers/loggingHelper');
+import "dotenv/config";
+import path from "path";
+import { logger, printLatestAction, vpw } from "../utils/index.js";
 
-module.exports = {
-  commandName: path.basename(__filename).split('.')[0],
-  slash: true,
-  testOnly: true,
-  guildOnly: true,
-  description: 'Show latest version link and lock status',
-  callback: async ({ channel, interaction }) => {
-    let logger = (new Logger(null)).logger;
-    const outputHelper = new OutputHelper();
-    const vpwDataService = new VPWDataService();
+export default {
+  commandName: path.basename(import.meta.url).split(".")[0],
+  description: "Show latest version link and lock status",
 
-    try{
-      const latestStatus = await vpwDataService.getLatestStatus(channel.id);
+  // No arguments for this command
+  options: [],
+
+  callback: async function ({ interaction, channel }) {
+    try {
+      const latestStatus = await vpw.getLatestStatus(channel.id);
       let response;
 
-      if(latestStatus) {
-        response = outputHelper.printLatestAction(latestStatus);
+      if (latestStatus) {
+        response = printLatestAction(latestStatus);
       } else {
-        response = 'This channel does not have a check in.  Use the /checkin command to create a check in.';
+        response =
+          "This channel does not have a check in. Use the /checkin command to create a check in.";
       }
-      interaction.reply({content: response, ephemeral: true});
-    } catch(error) {
+
+      await interaction.reply({ content: response, flags: 64 });
+    } catch (error) {
       logger.error(error.message);
-      interaction.reply({content: error.message, ephemeral: true});
+      await interaction.reply({ content: error.message, flags: 64 });
     }
   },
-
-}
+};

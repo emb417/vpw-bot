@@ -1,37 +1,33 @@
-# syntax docker/dockerfile:1
-
-FROM node:16.6
+# Stage 1: Build the application
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-RUN mkdir -p /app/data
+COPY package*.json ./
+RUN npm ci --omit=dev
 
-COPY ["package.json", "./"]
+# Copy only necessary source directories
+COPY commands/ ./commands/
+COPY utils/ ./utils/
+COPY index.js ./
 
-RUN npm install
+# Stage 2: Create the final, minimal image
+FROM node:24-alpine
 
-COPY . .
+WORKDIR /app
 
-ARG APPLICATION_ID
-ARG BOT_TOKEN
-ARG BOT_USER
-ARG COMMANDS_DIR
-ARG FEATURES_DIR
-ARG DISCORD_BASE_API
-ARG GUILD_ID
-ARG SECONDS_TO_DELETE_MESSAGE
-ARG BOT_OWNER
-ARG VPW_DATA_SERVICE_API_URI
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 
-ENV APPLICATION_ID $APPLICATION_ID
-ENV BOT_TOKEN $BOT_TOKEN
-ENV BOT_USER $BOT_USER
-ENV COMMANDS_DIR $COMMANDS_DIR
-ENV FEATURES_DIR $FEATURES_DIR
-ENV DISCORD_BASE_API $DISCORD_BASE_API
-ENV GUILD_ID $GUILD_ID
-ENV SECONDS_TO_DELETE_MESSAGE $SECONDS_TO_DELETE_MESSAGE
-ENV BOT_OWNER $BOT_OWNER
-ENV VPW_DATA_SERVICE_API_URI $VPW_DATA_SERVICE_API_URI
+# Copy only essential files from builder
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/commands ./commands
+COPY --from=builder --chown=nodejs:nodejs /app/utils ./utils
+COPY --from=builder --chown=nodejs:nodejs /app/index.js ./
 
-CMD [ "node", "index.js" ]
+# Create data directory with correct ownership
+RUN mkdir -p /app/data && chown nodejs:nodejs /app/data
+
+USER nodejs
+
+CMD ["node", "index.js"]
