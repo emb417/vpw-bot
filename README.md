@@ -11,17 +11,17 @@ Discord bot for Virtual Pinball Workshop project version tracking. Provides chec
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `/checkout` | Lock a project for editing. Shows current status if already locked. |
-| `/checkin <link> <version> <comments>` | Unlock project and save new version with download link. |
-| `/latest` | Show the latest version link and lock status. |
-| `/list` | Show the last 10 actions on the project. |
-| `/revert` | Undo your last action. |
+| Command                                | Description                                                         |
+| -------------------------------------- | ------------------------------------------------------------------- |
+| `/checkout`                            | Lock a project for editing. Shows current status if already locked. |
+| `/checkin <link> <version> <comments>` | Unlock project and save new version with download link.             |
+| `/latest`                              | Show the latest version link and lock status.                       |
+| `/list`                                | Show the last 10 actions on the project.                            |
+| `/revert`                              | Undo your last action.                                              |
 
 ## Project Structure
 
-```
+```bash
 vpw-bot/
 ├── commands/        # Slash commands
 ├── helpers/         # Utility classes (logging, output formatting)
@@ -35,16 +35,16 @@ vpw-bot/
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `BOT_TOKEN` | Discord bot token |
-| `GUILD_ID` | Discord server ID for slash commands |
-| `BOT_OWNER` | Discord user ID of bot owner |
-| `COMMANDS_DIR` | Directory containing commands (default: `commands`) |
-| `SECONDS_TO_DELETE_MESSAGE` | Auto-delete error messages after N seconds |
-| `VPW_DATA_SERVICE_API_URI` | URL to vpw-data API service |
-| `BOT_CONTEST_ADMIN_ROLE_NAME` | Role name for admin commands |
-| `CONTEST_CHANNELS` | Channel restrictions for commands |
+| Variable                      | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `BOT_TOKEN`                   | Discord bot token                                   |
+| `GUILD_ID`                    | Discord server ID for slash commands                |
+| `BOT_OWNER`                   | Discord user ID of bot owner                        |
+| `COMMANDS_DIR`                | Directory containing commands (default: `commands`) |
+| `SECONDS_TO_DELETE_MESSAGE`   | Auto-delete error messages after N seconds          |
+| `VPW_DATA_SERVICE_API_URI`    | URL to vpw-data API service                         |
+| `BOT_CONTEST_ADMIN_ROLE_NAME` | Role name for admin commands                        |
+| `CONTEST_CHANNELS`            | Channel restrictions for commands                   |
 
 ## Development
 
@@ -77,6 +77,6 @@ docker-compose -f docker-compose-local.yml up -d vpw-bot
 
 The bot communicates with `vpw-data` service for persistence. Each Discord channel represents a project, with actions (checkin/checkout) tracked per channel.
 
-```
+```bash
 Discord User → vpw-bot → vpw-data API → MongoDB
 ```
