@@ -26,8 +26,7 @@ export default {
       const username = interaction.user.username;
 
       if (!isCheckedOut && latestStatus) {
-        await interaction.deferReply({ flags: 64 });
-
+        await interaction.deferReply();
         const action = createAction(
           channel.id,
           channel.name,
@@ -48,7 +47,6 @@ export default {
         }
       } else {
         await interaction.deferReply({ flags: 64 });
-
         if (!latestStatus) {
           response =
             "**Check Out failed**. There is **NOT** an existing CHECK IN for this project. Please use the /checkin command to create a CHECK IN.";

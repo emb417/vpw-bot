@@ -60,7 +60,7 @@ export default {
           (isCheckedOut && username === latestStatus?.username) ||
           isFirstCheckin
         ) {
-          await interaction.deferReply({ flags: 64 });
+          await interaction.deferReply();
 
           const action = createAction(
             channel.id,
