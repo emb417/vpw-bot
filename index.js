@@ -77,7 +77,7 @@ client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   logger.info(
-    `Received interaction: ${interaction.commandName} from ${interaction.user.username}`,
+    `Interaction from ${interaction.user.username}: ${interaction.commandName} ${interaction.channel.name} `,
   );
 
   const command = commands.get(interaction.commandName);
