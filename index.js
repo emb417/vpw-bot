@@ -1,6 +1,7 @@
 import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
+import { handleCheckinModal } from "./commands/check-in.js";
 import { logger } from "./utils/index.js";
 import { Client, GatewayIntentBits, Partials, REST, Routes } from "discord.js";
 import fs from "fs";
@@ -69,6 +70,10 @@ client.once("clientReady", async () => {
 // 4. Interaction router
 // -----------------------------------------------------
 client.on("interactionCreate", async (interaction) => {
+  if (interaction.isModalSubmit()) {
+    await handleCheckinModal(interaction);
+  }
+
   if (!interaction.isChatInputCommand()) return;
 
   logger.info(
@@ -96,7 +101,6 @@ client.on("interactionCreate", async (interaction) => {
       logger.warn(`Command ${interaction.commandName} did not reply!`);
       await interaction.reply({
         content: "Command executed but did not reply.",
-        ephemeral: true,
       });
     }
   } catch (error) {

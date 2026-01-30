@@ -14,7 +14,8 @@ Discord bot for Virtual Pinball Workshop project version tracking. Provides chec
 | Command                                | Description                                                         |
 | -------------------------------------- | ------------------------------------------------------------------- |
 | `/checkout`                            | Lock a project for editing. Shows current status if already locked. |
-| `/checkin <link> <version> <comments>` | Unlock project and save new version with download link.             |
+| `/check-in`                            | Unlock a project and save new version with download link.           |
+| `/checkin <link> <version> <comments>` | _Deprecated_. Use `/check-in` instead.                              |
 | `/latest`                              | Show the latest version link and lock status.                       |
 | `/list`                                | Show the last 10 actions on the project.                            |
 | `/revert`                              | Undo your last action.                                              |
@@ -24,10 +25,7 @@ Discord bot for Virtual Pinball Workshop project version tracking. Provides chec
 ```bash
 vpw-bot/
 ├── commands/        # Slash commands
-├── helpers/         # Utility classes (logging, output formatting)
-├── models/          # Data models (Action)
-├── services/        # API service (vpwDataService)
-├── data/            # Runtime data directory
+├── utils/         # Utility classes (api calls, action helper, logging, output formatting)
 ├── index.js         # Bot entry point
 ├── Dockerfile       # Multi-stage Docker build
 └── package.json
@@ -56,7 +54,7 @@ npm install
 npm start
 ```
 
-## Docker
+## Docker Development
 
 ```bash
 # Build image
@@ -69,7 +67,6 @@ docker-compose -f docker-compose-local.yml up -d vpw-bot
 ## Dependencies
 
 - **discord.js** v14 - Discord API wrapper
-- **wokcommands** v2.1 - Command framework
 - **pino** / **pino-pretty** - Logging
 - **mongodb** v6 - Database driver (via vpw-data service)
 
