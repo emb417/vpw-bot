@@ -58,7 +58,7 @@ Discord users issue slash commands to the `vpw-bot`. The bot processes these com
 ## Development Conventions
 
 - **Modular Command Structure**: Each Discord slash command (e.g., `/checkin`, `/checkout`) is implemented as a separate module in the `commands/` directory. These modules export an object containing `commandName`, `description`, `options` (for Discord API registration), and an asynchronous `callback` function that encapsulates the command's logic.
-- **Utility Functions**: Reusable logic for API interactions (`utils/vpw.js`), action object creation (`utils/action.js`), and logging (`utils/logging.js`) is organized within the `utils/` directory.
+- **Utility Functions**: Reusable logic for API interactions (`utils/vpw.js`), action object creation (`utils/action.js`), and logging (`utils/logger.js`) is organized within the `utils/` directory.
 - **Structured Logging**: The `pino` logger is configured for `info` level logging, providing detailed and colorized output during development via `pino-pretty`.
 - **Environment-based Configuration**: Critical settings and credentials (e.g., `BOT_TOKEN`, `GUILD_ID`, `VPW_DATA_SERVICE_API_URI`) are loaded from environment variables using `dotenv`.
 - **ES Module Syntax**: The codebase consistently uses ES module `import`/`export` syntax.

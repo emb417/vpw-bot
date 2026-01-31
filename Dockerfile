@@ -1,6 +1,8 @@
 # Stage 1: Build the application
 FROM node:24-alpine AS builder
 
+ENV TZ=America/Los_Angeles
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -13,6 +15,8 @@ COPY index.js ./
 
 # Stage 2: Create the final, minimal image
 FROM node:24-alpine
+
+ENV TZ=America/Los_Angeles
 
 WORKDIR /app
 
