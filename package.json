@@ -7,9 +7,9 @@
   "scripts": {
     "start": "node index.js"
   },
-  "author": "Eric Faris",
+  "author": "emb417",
   "contributors": [
-    "emb417"
+    "Eric Faris"
   ],
   "dependencies": {
     "discord.js": "^14.25.1",
