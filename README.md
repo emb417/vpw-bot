@@ -44,21 +44,11 @@ vpw-bot/
 | `BOT_CONTEST_ADMIN_ROLE_NAME` | Role name for admin commands                        |
 | `CONTEST_CHANNELS`            | Channel restrictions for commands                   |
 
-## Development
-
-```bash
-# Install dependencies
-npm install
-
-# Run locally
-npm start
-```
-
 ## Docker Development
 
 ```bash
 # Build image
-docker build -t ericfaris/vpw-bot .
+docker build -t emb417/vpw-bot .
 
 # Run with docker-compose (from vpc-compose/)
 docker-compose -f docker-compose-local.yml up -d vpw-bot

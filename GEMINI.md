@@ -26,26 +26,12 @@ Discord users issue slash commands to the `vpw-bot`. The bot processes these com
 - Discord Bot Token, Guild ID, and other environment variables as specified in the `README.md`.
 - Access to a running `vpw-data` API service.
 
-### Local Development
-
-1. **Install Dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-2. **Run the Bot:**
-
-   ```bash
-   npm start
-   ```
-
 ### Docker
 
 1. **Build Docker Image:**
 
    ```bash
-   docker build -t ericfaris/vpw-bot .
+   docker build -t emb417/vpw-bot .
    ```
 
 2. **Run with Docker Compose (example):**
