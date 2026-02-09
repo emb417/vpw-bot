@@ -19,6 +19,7 @@ Discord bot for Virtual Pinball Workshop project version tracking. Provides chec
 | `/latest`                              | Show the latest version link and lock status.                       |
 | `/list`                                | Show the last 10 actions on the project.                            |
 | `/revert`                              | Undo your last action.                                              |
+| `/list-latest-versions`                | Show the latest action for every project, paginated to 5 projects per message. |
 
 ## Project Structure
 
