@@ -1,6 +1,6 @@
 {
   "name": "vpw-bot",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "type": "module",
   "description": "Discord bot for virtual pinball workshop",
   "main": "index.js",
