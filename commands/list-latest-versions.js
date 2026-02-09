@@ -1,15 +1,23 @@
 import path from "path";
 import { vpw, logger } from "../utils/index.js";
-import { EmbedBuilder } from "discord.js";
+import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 
 export default {
   commandName: path.basename(import.meta.url).split(".")[0],
   description: "Show the latest action for every project.",
-  options: [],
+  options: [
+    {
+      name: "project_name",
+      description: "The name of the project to filter by.",
+      type: ApplicationCommandOptionType.String,
+      required: false,
+    },
+  ],
 
   callback: async function ({ interaction }) {
     try {
-      const latestActions = await vpw.getProjects();
+      const projectName = interaction.options.getString("project_name");
+      const latestActions = await vpw.getProjects(projectName);
 
       if (!latestActions || latestActions.length === 0) {
         return interaction.reply({
@@ -23,7 +31,7 @@ export default {
         (a.channelName || "").localeCompare(b.channelName || ""),
       );
 
-      const projectsPerMessage = 5;
+      const projectsPerMessage = 20;
       const totalPages = Math.ceil(latestActions.length / projectsPerMessage);
 
       await interaction.deferReply({ flags: 64 });
@@ -36,25 +44,19 @@ export default {
         const description = currentProjects
           .map((a) => {
             let projectLine = `**<#${a.channelId}>**`;
-            const actionLine = [`${a.created}`, `**${a.actionType}**`].join(
-              " — ",
-            );
-            let userCommentLine = `<@${a.userId}>`;
 
             if (a.actionType === "checkin") {
-              const versionText = a.version
-                ? `Version ${a.version} Link`
-                : null;
-
+              const versionText = a.version ? `v${a.version} Link` : null;
               const linkedVersion =
                 a.version && a.link ? `[${versionText}](${a.link})` : null;
 
               projectLine += linkedVersion ? ` • ${linkedVersion}` : "";
-              userCommentLine += a.comments ? ` • _${a.comments}_` : "";
-
-              return `${projectLine}\n${actionLine}\n${userCommentLine}`;
             }
 
+            projectLine += ` • <@${a.userId}>`;
+            const actionLine = [`${a.created}`, `**${a.actionType}**`].join(
+              " — ",
+            );
             return `${projectLine}\n${actionLine}`;
           })
           .join("\n\n");

@@ -11,15 +11,15 @@ Discord bot for Virtual Pinball Workshop project version tracking. Provides chec
 
 ## Commands
 
-| Command                                | Description                                                                    |
-| -------------------------------------- | ------------------------------------------------------------------------------ |
-| `/checkout`                            | Lock a project for editing. Shows current status if already locked.            |
-| `/check-in`                            | Unlock a project and save new version with download link.                      |
-| `/checkin <link> <version> <comments>` | _Deprecated_. Use `/check-in` instead.                                         |
-| `/latest`                              | Show the latest version link and lock status.                                  |
-| `/list`                                | Show the last 10 actions on the project.                                       |
-| `/revert`                              | Undo your last action.                                                         |
-| `/list-latest-versions`                | Show the latest action for every project, paginated to 5 projects per message. |
+| Command                                | Description                                                                     |
+| -------------------------------------- | ------------------------------------------------------------------------------- |
+| `/checkout`                            | Lock a project for editing. Shows current status if already locked.             |
+| `/check-in`                            | Unlock a project and save new version with download link.                       |
+| `/checkin <link> <version> <comments>` | _Deprecated_. Use `/check-in` instead.                                          |
+| `/latest`                              | Show the latest version link and lock status.                                   |
+| `/list`                                | Show the last 10 actions on the project.                                        |
+| `/revert`                              | Undo your last action.                                                          |
+| `/list-latest-versions`                | Show the latest action for all projects, paginated, optional projectName filter |
 
 ## Project Structure
 

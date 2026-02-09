@@ -4,8 +4,12 @@ const options = {
   headers: { "Content-Type": "application/json" },
 };
 
-export const getProjects = async () =>
-  (await fetch(`${baseApiUrl}/projects`, options)).json();
+export const getProjects = async (projectName) => {
+  const url = projectName
+    ? `${baseApiUrl}/projects?projectName=${encodeURIComponent(projectName)}`
+    : `${baseApiUrl}/projects`;
+  return (await fetch(url, options)).json();
+};
 
 export const getProject = async (channelId) =>
   (await fetch(`${baseApiUrl}/projects/${channelId}`, options)).json();

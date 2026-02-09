@@ -76,8 +76,10 @@ client.on("interactionCreate", async (interaction) => {
 
   if (!interaction.isChatInputCommand()) return;
 
+  let projectName = interaction.options.getString("project_name");
+
   logger.info(
-    `${interaction.user.username} used ${interaction.commandName} for ${interaction.channel.name}`,
+    `${interaction.user.username} used ${interaction.commandName}${projectName ? ` (${projectName})` : ""} in ${interaction.channel.name}`,
   );
 
   const command = commands.get(interaction.commandName);
